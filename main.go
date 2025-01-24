@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/TuralMuzafarov/RSS_Agregator_GO/internal/database"
 	"github.com/go-chi/chi"
@@ -30,9 +31,12 @@ func main() {
 
 	conn, err := sql.Open("postgres", dbURL)
 
+	db := database.New(conn)
 	apiCfg := apiConfig{
-		DB: database.New(conn),
+		DB: db,
 	}
+
+	startScraping(db, 10, time.Minute)
 
 	if err != nil {
 		log.Fatal("Can not connect to the database, error:", err)
